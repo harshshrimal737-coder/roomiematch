@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 
 const AuthContext = createContext();
 
@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     if (stored) {
       const parsed = JSON.parse(stored);
       setUser(parsed);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${parsed.token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${parsed.token}`;
     }
     setLoading(false);
   }, []);
@@ -20,13 +20,13 @@ export function AuthProvider({ children }) {
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem('roomiematch_user', JSON.stringify(userData));
-    axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
+    api.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('roomiematch_user');
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
   };
 
   const updateUser = (data) => {

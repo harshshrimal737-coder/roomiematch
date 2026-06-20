@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -63,7 +63,7 @@ export default function Setup() {
     } else {
       setLoading(true);
       try {
-        const { data: updated } = await axios.put('/api/users/profile', data);
+        const { data: updated } = await api.put('/api/users/profile', data);
         updateUser(updated);
         navigate('/explore');
       } catch (e) {

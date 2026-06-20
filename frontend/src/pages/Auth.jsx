@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ export default function Auth() {
     setLoading(true);
     try {
       const url = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const { data } = await axios.post(url, form);
+      const { data } = await api.post(url, form);
       login(data);
       navigate(data.isProfileComplete ? '/explore' : '/setup');
     } catch (e) {

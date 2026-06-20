@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { io } from 'socket.io-client';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -18,7 +18,7 @@ export default function Chat() {
 
   useEffect(() => {
     // Connect socket
-    socket = io('/', { path: '/socket.io' });
+    socket = io(import.meta.env.VITE_API_URL, { path: '/socket.io' });
     socket.emit('join', user._id);
 
     socket.on('receiveMessage', (msg) => {
@@ -34,12 +34,12 @@ export default function Chat() {
     const fetchData = async () => {
       try {
         const [msgRes, userRes] = await Promise.all([
-          axios.get(`/api/messages/${userId}`),
-          axios.get(`/api/users/explore`).then(r => r.data.find(u => u._id === userId)),
+          api.get(`/api/messages/${userId}`),
+          api.get(`/api/users/explore`).then(r => r.data.find(u => u._id === userId)),
         ]);
         setMessages(msgRes.data);
         // Try to get the user info
-        const { data: allUsers } = await axios.get('/api/users/explore');
+        const { data: allUsers } = await api.get('/api/users/explore');
         setOtherUser(allUsers.find(u => u._id === userId));
       } catch (e) {
         console.error(e);
@@ -65,7 +65,7 @@ export default function Chat() {
     socket.emit('sendMessage', { senderId: user._id, receiverId: userId, content });
 
     try {
-      await axios.post('/api/messages', { receiverId: userId, content });
+      await api.post('/api/messages', { receiverId: userId, content });
     } catch (e) {
       console.error(e);
     }

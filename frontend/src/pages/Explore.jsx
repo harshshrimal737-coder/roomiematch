@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 export default function Explore() {
@@ -13,7 +13,7 @@ export default function Explore() {
   const fetchUsers = async (city = '') => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`/api/users/explore${city ? `?city=${city}` : ''}`);
+      const { data } = await api.get(`/api/users/explore${city ? `?city=${city}` : ''}`);
       setUsers(data);
     } catch (e) {
       console.error(e);
@@ -26,7 +26,7 @@ export default function Explore() {
 
   const handleLike = async (userId) => {
     try {
-      const { data } = await axios.post(`/api/users/like/${userId}`);
+      const { data } = await api.post(`/api/users/like/${userId}`);
       setLikedIds(prev => [...prev, userId]);
       if (data.isMatch) {
         const matchedUser = users.find(u => u._id === userId);
